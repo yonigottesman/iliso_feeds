@@ -18,7 +18,9 @@ camera = cv2.VideoCapture(0)
 frame_0 = None
 t0 = time.time()
 count = 0
-
+motions_in_minute = 0
+t0_seconds = 0
+motion_count = 0
 while True:
 
     #take picture
@@ -37,13 +39,26 @@ while True:
     thresh = cv2.threshold(frameDelta, 25, 255, cv2.THRESH_BINARY)[1]
     changed_pixels = np.count_nonzero(thresh)
     count = count + changed_pixels
-    t1 = time.time()
-    if (t1 - t0) % 60 >= 58:
-        if count != 0:
-            count = log(count,1.2)
-        payload = {"all_feeds":[{"feed_name":"motion","samples":[{"value":count,"time":t1}]}]}
-        r = requests.post(ILISO_HOST, json=payload)
-        count = 0
+    if changed_pixels > 0:
+        motion_count = motion_count + 1
+    now = time.time()
+
+    # #every 1 second check if there was movement
+    # if (now - t0_seconds) % 60 >= 1:
+    #     motions_in_minute = motions_in_minute + motion_count
+    #     count = 0
+    #     t0_seconds = now
+
+    #every 60 seconds send counters
+    if (now - t0) % 60 >= 58:
+        payload = {"all_feeds":[{"feed_name":"motion","samples":[{"value":motion_count,"time":now}]}]}
+        motion_count = 0
+        try:
+            r = requests.post(ILISO_HOST, json=payload)
+        except requests.exceptions.RequestException as e:
+            print(e)
+        
+        motions_in_minute = 0
         t0 = time.time()
         
     frame_0 = gray
