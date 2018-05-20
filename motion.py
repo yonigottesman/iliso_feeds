@@ -11,8 +11,8 @@ import numpy as np
 from math import log
 import requests
 
-ILISO_HOST = "http://10.164.149.141:12345/update"
-
+#ILISO_HOST = "http://10.164.149.141:12345/update"
+ILISO_HOST = "https://iliso.herokuapp.com/update"
 camera = cv2.VideoCapture(0)
 
 frame_0 = None

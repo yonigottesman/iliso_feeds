@@ -7,9 +7,9 @@ import requests
 
 GPIO_2302_PIN = 22
 SENSOR = Adafruit_DHT.AM2302
-SAMPLE_INTERVAL = 10*60
-ILISO_HOST = "http://10.164.149.141:12345/update"
-
+SAMPLE_INTERVAL = 60*10
+#ILISO_HOST = "http://10.164.149.141:12345/update"
+ILISO_HOST = "https://iliso.herokuapp.com/update"
 
 while True:
     time.sleep(SAMPLE_INTERVAL)
